@@ -1,15 +1,19 @@
 const PALETTE = [
-  { bg: "bg-brick-500", text: "text-white", ring: "ring-brick-600", hex: "#c1552e" },
-  { bg: "bg-wood-500", text: "text-white", ring: "ring-wood-600", hex: "#3f6b45" },
-  { bg: "bg-wheat-400", text: "text-ink-900", ring: "ring-wheat-600", hex: "#e8b93d" },
-  { bg: "bg-ore-500", text: "text-white", ring: "ring-ore-700", hex: "#6e7f80" },
-  { bg: "bg-sheep-400", text: "text-ink-900", ring: "ring-sheep-500", hex: "#a8c686" },
-  { bg: "bg-brick-700", text: "text-white", ring: "ring-brick-700", hex: "#7f321c" },
-  { bg: "bg-wood-700", text: "text-white", ring: "ring-wood-700", hex: "#233d27" },
-  { bg: "bg-wheat-600", text: "text-white", ring: "ring-wheat-600", hex: "#a87816" },
-  { bg: "bg-ore-700", text: "text-white", ring: "ring-ore-700", hex: "#3a444a" },
-  { bg: "bg-sheep-500", text: "text-ink-900", ring: "ring-sheep-500", hex: "#8bab66" },
+  { bg: "bg-brick-500", text: "text-white", ring: "ring-brick-600" },
+  { bg: "bg-wood-500", text: "text-white", ring: "ring-wood-600" },
+  { bg: "bg-wheat-500", text: "text-white", ring: "ring-wheat-600" },
+  { bg: "bg-ore-500", text: "text-white", ring: "ring-ore-700" },
+  { bg: "bg-sheep-500", text: "text-ink-900", ring: "ring-sheep-500" },
+  { bg: "bg-teal-500", text: "text-white", ring: "ring-teal-600" },
+  { bg: "bg-plum-500", text: "text-white", ring: "ring-plum-600" },
+  { bg: "bg-rust-500", text: "text-white", ring: "ring-rust-600" },
+  { bg: "bg-indigo-500", text: "text-white", ring: "ring-indigo-600" },
 ];
+
+// The group's known roster gets a guaranteed-distinct color each. Anyone new
+// falls back to a hash below, which can't make that same guarantee but keeps
+// colors stable per name.
+const KNOWN_ROSTER = ["Gorgon", "Quan", "Hoss", "Bal", "Seth", "Tyler", "Bhung", "Brungus", "Rian"];
 
 function hashName(name: string): number {
   let hash = 0;
@@ -21,6 +25,8 @@ function hashName(name: string): number {
 }
 
 export function playerColor(name: string) {
+  const knownIndex = KNOWN_ROSTER.indexOf(name);
+  if (knownIndex !== -1) return PALETTE[knownIndex % PALETTE.length];
   return PALETTE[hashName(name) % PALETTE.length];
 }
 
