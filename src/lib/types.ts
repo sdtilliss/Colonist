@@ -5,6 +5,11 @@ export interface Game {
   winner: string;
 }
 
+export interface LegacyBaseline {
+  gamesPlayed: number;
+  wins: number;
+}
+
 export interface PlayerStats {
   name: string;
   gamesPlayed: number;
@@ -16,4 +21,5 @@ export interface PlayerStats {
   gamesBehind: number;
   lastPlayedAt: string | null;
   form: boolean[];
+  legacyGamesPlayed: number;
 }

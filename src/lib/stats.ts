@@ -1,6 +1,9 @@
-import type { Game, PlayerStats } from "./types";
+import type { Game, LegacyBaseline, PlayerStats } from "./types";
 
-export function computeStats(games: Game[]): PlayerStats[] {
+export function computeStats(
+  games: Game[],
+  legacyBaseline: Record<string, LegacyBaseline> = {}
+): PlayerStats[] {
   const sorted = [...games].sort(
     (a, b) => new Date(a.playedAt).getTime() - new Date(b.playedAt).getTime()
   );
@@ -16,11 +19,19 @@ export function computeStats(games: Game[]): PlayerStats[] {
     if (!game.players.includes(game.winner)) track(game.winner, game);
   });
 
+  Object.keys(legacyBaseline).forEach((name) => {
+    if (!byPlayer.has(name)) byPlayer.set(name, []);
+  });
+
   const stats: Omit<PlayerStats, "gamesBehind">[] = [];
 
   for (const [name, playerGames] of byPlayer.entries()) {
-    const gamesPlayed = playerGames.length;
-    const wins = playerGames.filter((g) => g.winner === name).length;
+    const legacy = legacyBaseline[name];
+    const legacyGamesPlayed = legacy?.gamesPlayed ?? 0;
+    const legacyWins = legacy?.wins ?? 0;
+
+    const gamesPlayed = playerGames.length + legacyGamesPlayed;
+    const wins = playerGames.filter((g) => g.winner === name).length + legacyWins;
     const winPct = gamesPlayed ? (wins / gamesPlayed) * 100 : 0;
 
     let currentStreak = 0;
@@ -42,7 +53,7 @@ export function computeStats(games: Game[]): PlayerStats[] {
 
     const reversed = [...playerGames].reverse();
     const lastWinIdx = reversed.findIndex((g) => g.winner === name);
-    const gamesSinceLastWin = lastWinIdx === -1 ? gamesPlayed : lastWinIdx;
+    const gamesSinceLastWin = lastWinIdx === -1 ? playerGames.length : lastWinIdx;
 
     const lastPlayedAt = playerGames[playerGames.length - 1]?.playedAt ?? null;
     const form = playerGames.slice(-5).map((g) => g.winner === name);
@@ -57,6 +68,7 @@ export function computeStats(games: Game[]): PlayerStats[] {
       gamesSinceLastWin,
       lastPlayedAt,
       form,
+      legacyGamesPlayed,
     });
   }
 

@@ -24,6 +24,8 @@ function Form({ form }: { form: boolean[] }) {
 }
 
 export function Leaderboard({ stats }: { stats: PlayerStats[] }) {
+  const hasLegacy = stats.some((s) => s.legacyGamesPlayed > 0);
+
   return (
     <div className="overflow-hidden rounded-2xl border border-ink-900/10 bg-white shadow-card">
       <div className="overflow-x-auto">
@@ -58,7 +60,17 @@ export function Leaderboard({ stats }: { stats: PlayerStats[] }) {
                   {s.winPct.toFixed(1)}%
                 </td>
                 <td className="px-4 py-3 text-right tabular-nums text-ink-800">{s.wins}</td>
-                <td className="px-4 py-3 text-right tabular-nums text-ink-800">{s.gamesPlayed}</td>
+                <td className="px-4 py-3 text-right tabular-nums text-ink-800">
+                  {s.gamesPlayed}
+                  {s.legacyGamesPlayed > 0 && (
+                    <span
+                      className="ml-0.5 text-ink-800/40"
+                      title={`Includes ${s.legacyGamesPlayed} legacy games from before per-game tracking began`}
+                    >
+                      *
+                    </span>
+                  )}
+                </td>
                 <td className="px-4 py-3 text-right tabular-nums text-ink-800">
                   {s.gamesBehind === 0 ? (
                     <span className="font-medium text-wood-600">Most wins</span>
@@ -86,6 +98,12 @@ export function Leaderboard({ stats }: { stats: PlayerStats[] }) {
           </tbody>
         </table>
       </div>
+      {hasLegacy && (
+        <p className="border-t border-ink-900/5 px-4 py-2 text-xs text-ink-800/50">
+          * Win %, Wins, and Games include pre-2024 legacy totals. Streak and Form reflect
+          logged games only.
+        </p>
+      )}
     </div>
   );
 }

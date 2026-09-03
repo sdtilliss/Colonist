@@ -1,8 +1,9 @@
 import fs from "fs";
 import path from "path";
-import type { Game } from "./types";
+import type { Game, LegacyBaseline } from "./types";
 
 const DATA_PATH = path.join(process.cwd(), "data", "games.json");
+const LEGACY_STATS_PATH = path.join(process.cwd(), "data", "legacy-stats.json");
 
 function readAll(): Game[] {
   const raw = fs.readFileSync(DATA_PATH, "utf8");
@@ -28,6 +29,15 @@ export function addGame(input: { players: string[]; winner: string; playedAt: st
   games.push(game);
   writeAll(games);
   return game;
+}
+
+export function getLegacyStats(): Record<string, LegacyBaseline> {
+  try {
+    const raw = fs.readFileSync(LEGACY_STATS_PATH, "utf8");
+    return JSON.parse(raw) as Record<string, LegacyBaseline>;
+  } catch {
+    return {};
+  }
 }
 
 export function getRoster(): string[] {

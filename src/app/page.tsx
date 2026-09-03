@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getGames } from "@/lib/store";
+import { getGames, getLegacyStats } from "@/lib/store";
 import { computeStats, computeLeagueSummary } from "@/lib/stats";
 import { Leaderboard } from "@/components/Leaderboard";
 import { RecentGames } from "@/components/RecentGames";
@@ -15,7 +15,7 @@ export default async function DashboardPage({
 }) {
   const { recorded } = await searchParams;
   const games = getGames();
-  const stats = computeStats(games);
+  const stats = computeStats(games, getLegacyStats());
   const summary = computeLeagueSummary(games, stats);
 
   return (
