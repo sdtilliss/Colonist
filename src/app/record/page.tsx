@@ -3,8 +3,8 @@ import { RecordTabs } from "./RecordTabs";
 
 export const dynamic = "force-dynamic";
 
-export default function RecordPage() {
-  const roster = getRoster();
+export default async function RecordPage() {
+  const roster = await getRoster();
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">

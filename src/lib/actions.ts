@@ -17,7 +17,7 @@ export async function recordGame(formData: FormData) {
     throw new Error("Winner must be one of the selected players.");
   }
 
-  addGame({ players, winner, playedAt: new Date().toISOString() });
+  await addGame({ players, winner, playedAt: new Date().toISOString() });
 
   revalidatePath("/");
   revalidatePath("/history");
@@ -56,13 +56,15 @@ export async function parseScreenshots(formData: FormData): Promise<ScreenshotPa
   }
 
   const parsed: ParsedGame = await parseGameScreenshots(images);
-  const roster = getRoster();
+  const roster = await getRoster();
 
-  const entries: ScreenshotEntry[] = parsed.players.map((p) => ({
-    rawName: p.rawName,
-    victoryPoints: p.victoryPoints,
-    resolvedName: resolveName(p.rawName, roster),
-  }));
+  const entries: ScreenshotEntry[] = await Promise.all(
+    parsed.players.map(async (p) => ({
+      rawName: p.rawName,
+      victoryPoints: p.victoryPoints,
+      resolvedName: await resolveName(p.rawName, roster),
+    }))
+  );
 
   return { entries, winnerRawName: parsed.winnerRawName, roster };
 }
@@ -80,8 +82,8 @@ export async function confirmScreenshotGame(
     throw new Error("Winner must be one of the confirmed players.");
   }
 
-  saveAliases(entries.map((e) => ({ rawName: e.rawName, resolvedName: e.resolvedName.trim() })));
-  addGame({ players, winner: winnerResolvedName, playedAt: new Date().toISOString() });
+  await saveAliases(entries.map((e) => ({ rawName: e.rawName, resolvedName: e.resolvedName.trim() })));
+  await addGame({ players, winner: winnerResolvedName, playedAt: new Date().toISOString() });
 
   revalidatePath("/");
   revalidatePath("/history");

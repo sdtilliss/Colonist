@@ -14,7 +14,7 @@ export default async function DashboardPage({
   searchParams: Promise<{ recorded?: string }>;
 }) {
   const { recorded } = await searchParams;
-  const games = getGames();
+  const games = await getGames();
   const stats = computeStats(games, getLegacyStats());
   const summary = computeLeagueSummary(games, stats);
 

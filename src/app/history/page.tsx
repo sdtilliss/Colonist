@@ -3,9 +3,9 @@ import { HistoryTable } from "./HistoryTable";
 
 export const dynamic = "force-dynamic";
 
-export default function HistoryPage() {
-  const games = getGames();
-  const roster = getRoster();
+export default async function HistoryPage() {
+  const games = await getGames();
+  const roster = await getRoster();
 
   return (
     <div className="space-y-6">

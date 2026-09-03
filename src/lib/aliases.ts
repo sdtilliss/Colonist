@@ -1,38 +1,33 @@
-import fs from "fs";
 import path from "path";
+import { readJson, writeJson } from "./blobStore";
 
 const ALIASES_PATH = path.join(process.cwd(), "data", "aliases.json");
 
-function readAliases(): Record<string, string> {
+async function readAliases(): Promise<Record<string, string>> {
   try {
-    const raw = fs.readFileSync(ALIASES_PATH, "utf8");
-    return JSON.parse(raw) as Record<string, string>;
+    return await readJson<Record<string, string>>("aliases.json", ALIASES_PATH);
   } catch {
     return {};
   }
 }
 
-function writeAliases(aliases: Record<string, string>) {
-  fs.writeFileSync(ALIASES_PATH, JSON.stringify(aliases, null, 2) + "\n");
-}
-
-export function getAliasMap(): Record<string, string> {
+export async function getAliasMap(): Promise<Record<string, string>> {
   return readAliases();
 }
 
-export function saveAliases(pairs: { rawName: string; resolvedName: string }[]) {
-  const aliases = readAliases();
+export async function saveAliases(pairs: { rawName: string; resolvedName: string }[]): Promise<void> {
+  const aliases = await readAliases();
   for (const { rawName, resolvedName } of pairs) {
     if (rawName.toLowerCase() !== resolvedName.toLowerCase()) {
       aliases[rawName] = resolvedName;
     }
   }
-  writeAliases(aliases);
+  await writeJson("aliases.json", ALIASES_PATH, aliases);
 }
 
 /** Best-effort guess: an existing alias, else an exact (case-insensitive) roster match, else null. */
-export function resolveName(rawName: string, roster: string[]): string | null {
-  const aliases = readAliases();
+export async function resolveName(rawName: string, roster: string[]): Promise<string | null> {
+  const aliases = await readAliases();
   if (aliases[rawName]) return aliases[rawName];
   const exact = roster.find((r) => r.toLowerCase() === rawName.toLowerCase());
   return exact ?? null;
