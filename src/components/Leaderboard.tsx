@@ -65,7 +65,7 @@ export function Leaderboard({ stats }: { stats: PlayerStats[] }) {
                   {s.legacyGamesPlayed > 0 && (
                     <span
                       className="ml-0.5 text-ink-800/40"
-                      title={`Includes ${s.legacyGamesPlayed} legacy games from before per-game tracking began`}
+                      title={`Includes ${s.legacyGamesPlayed} games tracked in the original sheet`}
                     >
                       *
                     </span>
@@ -100,8 +100,8 @@ export function Leaderboard({ stats }: { stats: PlayerStats[] }) {
       </div>
       {hasLegacy && (
         <p className="border-t border-ink-900/5 px-4 py-2 text-xs text-ink-800/50">
-          * Win %, Wins, and Games include pre-2024 legacy totals. Streak and Form reflect
-          logged games only.
+          * Win %, Wins, and Games include totals tracked in the original sheet. Streak and
+          Form reflect games logged here.
         </p>
       )}
     </div>

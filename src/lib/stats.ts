@@ -30,8 +30,12 @@ export function computeStats(
     const legacyGamesPlayed = legacy?.gamesPlayed ?? 0;
     const legacyWins = legacy?.wins ?? 0;
 
-    const gamesPlayed = playerGames.length + legacyGamesPlayed;
-    const wins = playerGames.filter((g) => g.winner === name).length + legacyWins;
+    // Seed games were migrated from the old sheet and are already reflected in the
+    // legacy baseline — only games recorded since then should add on top of it.
+    const newGames = playerGames.filter((g) => !g.id.startsWith("seed-"));
+
+    const gamesPlayed = newGames.length + legacyGamesPlayed;
+    const wins = newGames.filter((g) => g.winner === name).length + legacyWins;
     const winPct = gamesPlayed ? (wins / gamesPlayed) * 100 : 0;
 
     let currentStreak = 0;
@@ -93,6 +97,8 @@ export function computeLeagueSummary(
   stats: PlayerStats[],
   legacyTotalGames = 0
 ): LeagueSummary {
+  const newGames = games.filter((g) => !g.id.startsWith("seed-"));
+
   const eligible = stats.filter((s) => s.gamesPlayed >= 3);
   const champion = (eligible.length ? eligible : stats).reduce<PlayerStats | null>(
     (best, s) => (!best || s.winPct > best.winPct ? s : best),
@@ -104,8 +110,8 @@ export function computeLeagueSummary(
   );
 
   return {
-    totalGames: games.length + legacyTotalGames,
-    loggedGames: games.length,
+    totalGames: newGames.length + legacyTotalGames,
+    loggedGames: newGames.length,
     legacyGames: legacyTotalGames,
     totalPlayers: stats.length,
     champion,

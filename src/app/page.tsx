@@ -55,7 +55,11 @@ export default async function DashboardPage({
         <StatCard
           label="Total Games"
           value={summary.totalGames}
-          sub={summary.legacyGames > 0 ? `${summary.loggedGames} logged + ${summary.legacyGames} legacy` : undefined}
+          sub={
+            summary.legacyGames > 0
+              ? `${summary.legacyGames} from the old sheet + ${summary.loggedGames} new`
+              : undefined
+          }
           accent="wood"
         />
         <StatCard label="Players" value={summary.totalPlayers} accent="ore" />
