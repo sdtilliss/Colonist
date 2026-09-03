@@ -18,6 +18,14 @@ export default async function DashboardPage({
   const legacy = getLegacyStats();
   const stats = computeStats(games, legacy.players);
   const summary = computeLeagueSummary(games, stats, legacy.totalGames);
+  const lastGame = games[games.length - 1] ?? null;
+  const lastGameDate = lastGame
+    ? new Date(lastGame.playedAt).toLocaleDateString(undefined, {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })
+    : null;
 
   return (
     <div className="space-y-8">
@@ -55,8 +63,8 @@ export default async function DashboardPage({
         <StatCard label="Players" value={summary.totalPlayers} accent="ore" />
         <StatCard
           label="Reigning Champion"
-          value={summary.champion ? summary.champion.name : "—"}
-          sub={summary.champion ? `${summary.champion.winPct.toFixed(1)}% win rate` : "Not enough games"}
+          value={lastGame ? lastGame.winner : "—"}
+          sub={lastGame ? `won on ${lastGameDate}` : "No games yet"}
           accent="brick"
         />
         <StatCard

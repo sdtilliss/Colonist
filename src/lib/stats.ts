@@ -85,7 +85,6 @@ export function computeStats(
 export interface LeagueSummary {
   totalGames: number;
   totalPlayers: number;
-  champion: PlayerStats | null;
   hottestStreak: PlayerStats | null;
 }
 
@@ -96,11 +95,6 @@ export function computeLeagueSummary(
 ): LeagueSummary {
   const newGames = games.filter((g) => !g.id.startsWith("seed-"));
 
-  const eligible = stats.filter((s) => s.gamesPlayed >= 3);
-  const champion = (eligible.length ? eligible : stats).reduce<PlayerStats | null>(
-    (best, s) => (!best || s.winPct > best.winPct ? s : best),
-    null
-  );
   const hottestStreak = stats.reduce<PlayerStats | null>(
     (best, s) => (!best || s.currentStreak > best.currentStreak ? s : best),
     null
@@ -109,7 +103,6 @@ export function computeLeagueSummary(
   return {
     totalGames: newGames.length + legacyTotalGames,
     totalPlayers: stats.length,
-    champion,
     hottestStreak: hottestStreak && hottestStreak.currentStreak > 0 ? hottestStreak : null,
   };
 }
