@@ -2,7 +2,8 @@ import type { Game } from "@/lib/types";
 import { PlayerBadge } from "./PlayerBadge";
 
 function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString(undefined, {
+  return new Date(iso).toLocaleDateString("en-US", {
+    timeZone: "UTC",
     month: "short",
     day: "numeric",
     year: "numeric",

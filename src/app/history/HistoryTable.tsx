@@ -5,7 +5,8 @@ import type { Game } from "@/lib/types";
 import { PlayerBadge, PlayerChip } from "@/components/PlayerBadge";
 
 function formatDateTime(iso: string) {
-  return new Date(iso).toLocaleString(undefined, {
+  return new Date(iso).toLocaleString("en-US", {
+    timeZone: "UTC",
     month: "short",
     day: "numeric",
     year: "numeric",

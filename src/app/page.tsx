@@ -20,7 +20,8 @@ export default async function DashboardPage({
   const summary = computeLeagueSummary(games, stats, legacy.totalGames);
   const lastGame = games[games.length - 1] ?? null;
   const lastGameDate = lastGame
-    ? new Date(lastGame.playedAt).toLocaleDateString(undefined, {
+    ? new Date(lastGame.playedAt).toLocaleDateString("en-US", {
+        timeZone: "UTC",
         month: "short",
         day: "numeric",
         year: "numeric",
