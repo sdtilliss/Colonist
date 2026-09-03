@@ -10,6 +10,11 @@ export interface LegacyBaseline {
   wins: number;
 }
 
+export interface LegacyStats {
+  totalGames: number;
+  players: Record<string, LegacyBaseline>;
+}
+
 export interface PlayerStats {
   name: string;
   gamesPlayed: number;

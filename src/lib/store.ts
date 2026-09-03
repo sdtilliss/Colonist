@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import type { Game, LegacyBaseline } from "./types";
+import type { Game, LegacyStats } from "./types";
 import { readJson, writeJson } from "./blobStore";
 
 const GAMES_PATH = path.join(process.cwd(), "data", "games.json");
@@ -26,12 +26,12 @@ export async function addGame(input: { players: string[]; winner: string; played
   return game;
 }
 
-export function getLegacyStats(): Record<string, LegacyBaseline> {
+export function getLegacyStats(): LegacyStats {
   try {
     const raw = fs.readFileSync(LEGACY_STATS_PATH, "utf8");
-    return JSON.parse(raw) as Record<string, LegacyBaseline>;
+    return JSON.parse(raw) as LegacyStats;
   } catch {
-    return {};
+    return { totalGames: 0, players: {} };
   }
 }
 

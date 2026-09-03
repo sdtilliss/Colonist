@@ -15,8 +15,9 @@ export default async function DashboardPage({
 }) {
   const { recorded } = await searchParams;
   const games = await getGames();
-  const stats = computeStats(games, getLegacyStats());
-  const summary = computeLeagueSummary(games, stats);
+  const legacy = getLegacyStats();
+  const stats = computeStats(games, legacy.players);
+  const summary = computeLeagueSummary(games, stats, legacy.totalGames);
 
   return (
     <div className="space-y-8">
@@ -51,7 +52,12 @@ export default async function DashboardPage({
       </section>
 
       <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <StatCard label="Total Games" value={summary.totalGames} accent="wood" />
+        <StatCard
+          label="Total Games"
+          value={summary.totalGames}
+          sub={summary.legacyGames > 0 ? `${summary.loggedGames} logged + ${summary.legacyGames} legacy` : undefined}
+          accent="wood"
+        />
         <StatCard label="Players" value={summary.totalPlayers} accent="ore" />
         <StatCard
           label="Reigning Champion"

@@ -81,12 +81,18 @@ export function computeStats(
 
 export interface LeagueSummary {
   totalGames: number;
+  loggedGames: number;
+  legacyGames: number;
   totalPlayers: number;
   champion: PlayerStats | null;
   hottestStreak: PlayerStats | null;
 }
 
-export function computeLeagueSummary(games: Game[], stats: PlayerStats[]): LeagueSummary {
+export function computeLeagueSummary(
+  games: Game[],
+  stats: PlayerStats[],
+  legacyTotalGames = 0
+): LeagueSummary {
   const eligible = stats.filter((s) => s.gamesPlayed >= 3);
   const champion = (eligible.length ? eligible : stats).reduce<PlayerStats | null>(
     (best, s) => (!best || s.winPct > best.winPct ? s : best),
@@ -98,7 +104,9 @@ export function computeLeagueSummary(games: Game[], stats: PlayerStats[]): Leagu
   );
 
   return {
-    totalGames: games.length,
+    totalGames: games.length + legacyTotalGames,
+    loggedGames: games.length,
+    legacyGames: legacyTotalGames,
     totalPlayers: stats.length,
     champion,
     hottestStreak: hottestStreak && hottestStreak.currentStreak > 0 ? hottestStreak : null,

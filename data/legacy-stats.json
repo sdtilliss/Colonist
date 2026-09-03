@@ -1,11 +1,14 @@
 {
-  "Gorgon": { "gamesPlayed": 38, "wins": 8 },
-  "Quan": { "gamesPlayed": 60, "wins": 9 },
-  "Hoss": { "gamesPlayed": 55, "wins": 9 },
-  "Bal": { "gamesPlayed": 33, "wins": 13 },
-  "Seth": { "gamesPlayed": 40, "wins": 7 },
-  "Tyler": { "gamesPlayed": 19, "wins": 1 },
-  "Bhung": { "gamesPlayed": 56, "wins": 10 },
-  "Brungus": { "gamesPlayed": 30, "wins": 9 },
-  "Rian": { "gamesPlayed": 1, "wins": 0 }
+  "totalGames": 66,
+  "players": {
+    "Gorgon": { "gamesPlayed": 38, "wins": 8 },
+    "Quan": { "gamesPlayed": 60, "wins": 9 },
+    "Hoss": { "gamesPlayed": 55, "wins": 9 },
+    "Bal": { "gamesPlayed": 33, "wins": 13 },
+    "Seth": { "gamesPlayed": 40, "wins": 7 },
+    "Tyler": { "gamesPlayed": 19, "wins": 1 },
+    "Bhung": { "gamesPlayed": 56, "wins": 10 },
+    "Brungus": { "gamesPlayed": 30, "wins": 9 },
+    "Rian": { "gamesPlayed": 1, "wins": 0 }
+  }
 }
