@@ -1,12 +1,17 @@
+"use client";
+
+import { useMemo, useState } from "react";
 import type { PlayerStats } from "@/lib/types";
 import { PlayerBadge } from "./PlayerBadge";
 
-function rankLabel(rank: number) {
-  if (rank === 1) return "🥇";
-  if (rank === 2) return "🥈";
-  if (rank === 3) return "🥉";
-  return `${rank}`;
-}
+type SortKey =
+  | "name"
+  | "winPct"
+  | "wins"
+  | "gamesPlayed"
+  | "gamesBehind"
+  | "currentStreak"
+  | "gamesSinceLastWin";
 
 function Form({ form }: { form: boolean[] }) {
   return (
@@ -23,8 +28,60 @@ function Form({ form }: { form: boolean[] }) {
   );
 }
 
+function SortHeader({
+  label,
+  sortKey,
+  activeKey,
+  dir,
+  onSort,
+  align = "right",
+}: {
+  label: string;
+  sortKey: SortKey;
+  activeKey: SortKey;
+  dir: "asc" | "desc";
+  onSort: (key: SortKey) => void;
+  align?: "left" | "right";
+}) {
+  const active = sortKey === activeKey;
+  return (
+    <th className={`px-4 py-3 font-medium ${align === "right" ? "text-right" : "text-left"}`}>
+      <button
+        type="button"
+        onClick={() => onSort(sortKey)}
+        className={`inline-flex items-center gap-1 transition hover:text-ink-900 ${
+          align === "right" ? "flex-row-reverse" : ""
+        } ${active ? "text-ink-900" : ""}`}
+      >
+        {label}
+        <span className="w-2.5 text-[10px] leading-none text-ink-800/50">
+          {active ? (dir === "asc" ? "▲" : "▼") : ""}
+        </span>
+      </button>
+    </th>
+  );
+}
+
 export function Leaderboard({ stats }: { stats: PlayerStats[] }) {
-  const hasLegacy = stats.some((s) => s.legacyGamesPlayed > 0);
+  const [sortKey, setSortKey] = useState<SortKey>("winPct");
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
+
+  function handleSort(key: SortKey) {
+    if (key === sortKey) {
+      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    } else {
+      setSortKey(key);
+      setSortDir(key === "name" ? "asc" : "desc");
+    }
+  }
+
+  const sorted = useMemo(() => {
+    const dirMult = sortDir === "asc" ? 1 : -1;
+    return [...stats].sort((a, b) => {
+      if (sortKey === "name") return a.name.localeCompare(b.name) * dirMult;
+      return (a[sortKey] - b[sortKey]) * dirMult;
+    });
+  }, [stats, sortKey, sortDir]);
 
   return (
     <div className="overflow-hidden rounded-2xl border border-ink-900/10 bg-white shadow-card">
@@ -32,27 +89,31 @@ export function Leaderboard({ stats }: { stats: PlayerStats[] }) {
         <table className="w-full min-w-[640px] border-collapse text-sm">
           <thead>
             <tr className="border-b border-ink-900/10 bg-parchment-100/70 text-left text-xs uppercase tracking-wide text-ink-800/60">
-              <th className="px-4 py-3 font-medium">Rank</th>
-              <th className="px-4 py-3 font-medium">Player</th>
-              <th className="px-4 py-3 font-medium text-right">Win %</th>
-              <th className="px-4 py-3 font-medium text-right">Wins</th>
-              <th className="px-4 py-3 font-medium text-right">Games</th>
-              <th className="px-4 py-3 font-medium text-right">Wins Behind</th>
-              <th className="px-4 py-3 font-medium text-right">Streak</th>
-              <th className="px-4 py-3 font-medium text-right">Since Last Win</th>
+              <SortHeader label="Player" sortKey="name" activeKey={sortKey} dir={sortDir} onSort={handleSort} align="left" />
+              <SortHeader label="Win %" sortKey="winPct" activeKey={sortKey} dir={sortDir} onSort={handleSort} />
+              <SortHeader label="Wins" sortKey="wins" activeKey={sortKey} dir={sortDir} onSort={handleSort} />
+              <SortHeader label="Games" sortKey="gamesPlayed" activeKey={sortKey} dir={sortDir} onSort={handleSort} />
+              <SortHeader label="Wins Behind" sortKey="gamesBehind" activeKey={sortKey} dir={sortDir} onSort={handleSort} />
+              <SortHeader label="Streak" sortKey="currentStreak" activeKey={sortKey} dir={sortDir} onSort={handleSort} />
+              <SortHeader
+                label="Since Last Win"
+                sortKey="gamesSinceLastWin"
+                activeKey={sortKey}
+                dir={sortDir}
+                onSort={handleSort}
+              />
               <th className="px-4 py-3 font-medium">Form</th>
             </tr>
           </thead>
           <tbody>
-            {stats.map((s, i) => (
+            {sorted.map((s) => (
               <tr
                 key={s.name}
                 className="border-b border-ink-900/5 last:border-0 hover:bg-parchment-100/40"
               >
-                <td className="px-4 py-3 text-base">{rankLabel(i + 1)}</td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-2 font-medium text-ink-900">
-                    <PlayerBadge name={s.name} highlighted={i === 0} />
+                    <PlayerBadge name={s.name} />
                     {s.name}
                   </div>
                 </td>
@@ -60,17 +121,7 @@ export function Leaderboard({ stats }: { stats: PlayerStats[] }) {
                   {s.winPct.toFixed(1)}%
                 </td>
                 <td className="px-4 py-3 text-right tabular-nums text-ink-800">{s.wins}</td>
-                <td className="px-4 py-3 text-right tabular-nums text-ink-800">
-                  {s.gamesPlayed}
-                  {s.legacyGamesPlayed > 0 && (
-                    <span
-                      className="ml-0.5 text-ink-800/40"
-                      title={`Includes ${s.legacyGamesPlayed} games tracked in the original sheet`}
-                    >
-                      *
-                    </span>
-                  )}
-                </td>
+                <td className="px-4 py-3 text-right tabular-nums text-ink-800">{s.gamesPlayed}</td>
                 <td className="px-4 py-3 text-right tabular-nums text-ink-800">
                   {s.gamesBehind === 0 ? (
                     <span className="font-medium text-wood-600">Most wins</span>
@@ -98,12 +149,6 @@ export function Leaderboard({ stats }: { stats: PlayerStats[] }) {
           </tbody>
         </table>
       </div>
-      {hasLegacy && (
-        <p className="border-t border-ink-900/5 px-4 py-2 text-xs text-ink-800/50">
-          * Win %, Wins, and Games include totals tracked in the original sheet. Streak and
-          Form reflect games logged here.
-        </p>
-      )}
     </div>
   );
 }

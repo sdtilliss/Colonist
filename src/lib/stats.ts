@@ -72,7 +72,6 @@ export function computeStats(
       gamesSinceLastWin,
       lastPlayedAt,
       form,
-      legacyGamesPlayed,
     });
   }
 
@@ -85,8 +84,6 @@ export function computeStats(
 
 export interface LeagueSummary {
   totalGames: number;
-  loggedGames: number;
-  legacyGames: number;
   totalPlayers: number;
   champion: PlayerStats | null;
   hottestStreak: PlayerStats | null;
@@ -111,8 +108,6 @@ export function computeLeagueSummary(
 
   return {
     totalGames: newGames.length + legacyTotalGames,
-    loggedGames: newGames.length,
-    legacyGames: legacyTotalGames,
     totalPlayers: stats.length,
     champion,
     hottestStreak: hottestStreak && hottestStreak.currentStreak > 0 ? hottestStreak : null,

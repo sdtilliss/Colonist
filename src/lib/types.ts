@@ -26,5 +26,4 @@ export interface PlayerStats {
   gamesBehind: number;
   lastPlayedAt: string | null;
   form: boolean[];
-  legacyGamesPlayed: number;
 }

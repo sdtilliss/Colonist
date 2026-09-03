@@ -37,8 +37,7 @@ export default async function DashboardPage({
               Catan Win Tracker
             </h1>
             <p className="mt-3 max-w-lg text-sm text-ink-800/70 sm:text-base">
-              Every settlement, every steal, every long-forgotten Rian appearance —
-              tracked and tallied since 2024.
+              Tracked and tallied since 2024.
             </p>
             <Link
               href="/record"
@@ -52,16 +51,7 @@ export default async function DashboardPage({
       </section>
 
       <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <StatCard
-          label="Total Games"
-          value={summary.totalGames}
-          sub={
-            summary.legacyGames > 0
-              ? `${summary.legacyGames} from the old sheet + ${summary.loggedGames} new`
-              : undefined
-          }
-          accent="wood"
-        />
+        <StatCard label="Total Games" value={summary.totalGames} accent="wood" />
         <StatCard label="Players" value={summary.totalPlayers} accent="ore" />
         <StatCard
           label="Reigning Champion"
