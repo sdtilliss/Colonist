@@ -1,0 +1,337 @@
+[
+  {
+    "id": "seed-001",
+    "playedAt": "2024-06-12T20:33:55.000Z",
+    "players": [
+      "Gorgon",
+      "Quan",
+      "Hoss",
+      "Bal",
+      "Brungus"
+    ],
+    "winner": "Brungus"
+  },
+  {
+    "id": "seed-002",
+    "playedAt": "2024-06-12T20:41:16.000Z",
+    "players": [
+      "Gorgon",
+      "Quan",
+      "Hoss",
+      "Bal",
+      "Bhung",
+      "Brungus"
+    ],
+    "winner": "Quan"
+  },
+  {
+    "id": "seed-003",
+    "playedAt": "2024-06-12T20:43:58.000Z",
+    "players": [
+      "Gorgon",
+      "Bal",
+      "Seth",
+      "Bhung"
+    ],
+    "winner": "Hoss"
+  },
+  {
+    "id": "seed-004",
+    "playedAt": "2024-06-12T21:02:22.000Z",
+    "players": [
+      "Gorgon",
+      "Quan",
+      "Hoss",
+      "Bal",
+      "Seth",
+      "Tyler",
+      "Bhung",
+      "Rian"
+    ],
+    "winner": "Brungus"
+  },
+  {
+    "id": "seed-005",
+    "playedAt": "2024-06-17T04:08:21.000Z",
+    "players": [
+      "Gorgon",
+      "Quan",
+      "Hoss",
+      "Bal",
+      "Bhung",
+      "Brungus"
+    ],
+    "winner": "Hoss"
+  },
+  {
+    "id": "seed-006",
+    "playedAt": "2024-06-20T04:21:43.000Z",
+    "players": [
+      "Gorgon",
+      "Quan",
+      "Hoss",
+      "Bal",
+      "Seth",
+      "Brungus"
+    ],
+    "winner": "Seth"
+  },
+  {
+    "id": "seed-007",
+    "playedAt": "2024-06-20T05:08:28.000Z",
+    "players": [
+      "Gorgon",
+      "Quan",
+      "Hoss",
+      "Bal",
+      "Seth",
+      "Brungus"
+    ],
+    "winner": "Brungus"
+  },
+  {
+    "id": "seed-008",
+    "playedAt": "2024-07-15T04:20:06.000Z",
+    "players": [
+      "Gorgon",
+      "Quan",
+      "Hoss",
+      "Bal",
+      "Seth",
+      "Brungus"
+    ],
+    "winner": "Hoss"
+  },
+  {
+    "id": "seed-009",
+    "playedAt": "2024-07-25T05:03:42.000Z",
+    "players": [
+      "Quan",
+      "Hoss",
+      "Bal",
+      "Tyler",
+      "Bhung"
+    ],
+    "winner": "Hoss"
+  },
+  {
+    "id": "seed-010",
+    "playedAt": "2024-07-26T04:28:31.000Z",
+    "players": [
+      "Gorgon",
+      "Quan",
+      "Hoss",
+      "Seth",
+      "Bhung"
+    ],
+    "winner": "Hoss"
+  },
+  {
+    "id": "seed-011",
+    "playedAt": "2024-08-05T03:51:52.000Z",
+    "players": [
+      "Gorgon",
+      "Hoss",
+      "Seth",
+      "Bhung",
+      "Brungus"
+    ],
+    "winner": "Gorgon"
+  },
+  {
+    "id": "seed-012",
+    "playedAt": "2024-08-09T04:42:38.000Z",
+    "players": [
+      "Quan",
+      "Hoss",
+      "Seth",
+      "Bhung",
+      "Brungus"
+    ],
+    "winner": "Brungus"
+  },
+  {
+    "id": "seed-013",
+    "playedAt": "2024-08-12T03:51:27.000Z",
+    "players": [
+      "Gorgon",
+      "Quan",
+      "Hoss",
+      "Seth",
+      "Bhung"
+    ],
+    "winner": "Gorgon"
+  },
+  {
+    "id": "seed-014",
+    "playedAt": "2024-08-13T04:17:17.000Z",
+    "players": [
+      "Gorgon",
+      "Quan",
+      "Hoss",
+      "Seth",
+      "Bhung",
+      "Brungus"
+    ],
+    "winner": "Hoss"
+  },
+  {
+    "id": "seed-015",
+    "playedAt": "2024-08-16T05:18:30.000Z",
+    "players": [
+      "Gorgon",
+      "Quan",
+      "Hoss",
+      "Seth",
+      "Bhung"
+    ],
+    "winner": "Bhung"
+  },
+  {
+    "id": "seed-016",
+    "playedAt": "2024-08-19T05:18:01.000Z",
+    "players": [
+      "Gorgon",
+      "Hoss",
+      "Bal",
+      "Seth",
+      "Bhung"
+    ],
+    "winner": "Seth"
+  },
+  {
+    "id": "seed-017",
+    "playedAt": "2024-08-20T05:09:27.000Z",
+    "players": [
+      "Gorgon",
+      "Quan",
+      "Hoss",
+      "Bhung",
+      "Brungus"
+    ],
+    "winner": "Bhung"
+  },
+  {
+    "id": "seed-018",
+    "playedAt": "2024-08-22T04:56:32.000Z",
+    "players": [
+      "Gorgon",
+      "Quan",
+      "Hoss",
+      "Bal",
+      "Bhung"
+    ],
+    "winner": "Bal"
+  },
+  {
+    "id": "seed-019",
+    "playedAt": "2024-08-23T05:00:39.000Z",
+    "players": [
+      "Gorgon",
+      "Quan",
+      "Hoss",
+      "Seth",
+      "Bhung"
+    ],
+    "winner": "Gorgon"
+  },
+  {
+    "id": "seed-020",
+    "playedAt": "2024-08-26T06:32:39.000Z",
+    "players": [
+      "Gorgon",
+      "Hoss",
+      "Bal",
+      "Seth",
+      "Bhung"
+    ],
+    "winner": "Gorgon"
+  },
+  {
+    "id": "seed-021",
+    "playedAt": "2024-08-27T08:04:46.000Z",
+    "players": [
+      "Gorgon",
+      "Quan",
+      "Hoss",
+      "Seth",
+      "Bhung"
+    ],
+    "winner": "Seth"
+  },
+  {
+    "id": "seed-022",
+    "playedAt": "2024-11-19T05:33:35.000Z",
+    "players": [
+      "Gorgon",
+      "Quan",
+      "Hoss",
+      "Seth",
+      "Brungus"
+    ],
+    "winner": "Gorgon"
+  },
+  {
+    "id": "seed-023",
+    "playedAt": "2025-02-26T06:05:19.000Z",
+    "players": [
+      "Quan",
+      "Hoss",
+      "Bal",
+      "Seth",
+      "Tyler",
+      "Bhung"
+    ],
+    "winner": "Quan"
+  },
+  {
+    "id": "seed-024",
+    "playedAt": "2025-08-19T04:29:14.000Z",
+    "players": [
+      "Gorgon",
+      "Quan",
+      "Hoss",
+      "Bal",
+      "Bhung",
+      "Brungus"
+    ],
+    "winner": "Quan"
+  },
+  {
+    "id": "seed-025",
+    "playedAt": "2025-08-21T04:47:04.000Z",
+    "players": [
+      "Gorgon",
+      "Quan",
+      "Hoss",
+      "Bal",
+      "Tyler",
+      "Bhung"
+    ],
+    "winner": "Bal"
+  },
+  {
+    "id": "seed-026",
+    "playedAt": "2026-09-02T03:22:04.000Z",
+    "players": [
+      "Gorgon",
+      "Quan",
+      "Hoss",
+      "Bhung",
+      "Brungus"
+    ],
+    "winner": "Brungus"
+  },
+  {
+    "id": "seed-027",
+    "playedAt": "2026-09-03T04:25:55.000Z",
+    "players": [
+      "Gorgon",
+      "Quan",
+      "Hoss",
+      "Bal",
+      "Bhung"
+    ],
+    "winner": "Gorgon"
+  }
+]
