@@ -1,7 +1,6 @@
-import { RecordView } from "@/app/_views/RecordView";
-
-export const dynamic = "force-dynamic";
+import { redirect } from "next/navigation";
+import { DEFAULT_LEAGUE_SLUG } from "@/lib/leagues";
 
 export default function RecordPage() {
-  return <RecordView />;
+  redirect(`/l/${DEFAULT_LEAGUE_SLUG}/record`);
 }
