@@ -106,3 +106,38 @@ export function computeLeagueSummary(
     hottestStreak: hottestStreak && hottestStreak.currentStreak > 0 ? hottestStreak : null,
   };
 }
+
+export interface FunStatsSummary {
+  mostDevCards: { name: string; total: number } | null;
+  mostTrades: { name: string; total: number } | null;
+}
+
+/** Totals from optional per-game AI-parsed stats (dev cards bought, trades). Only reflects
+ * games where a stats screenshot was uploaded — most games won't have this data. */
+export function computeFunStats(games: Game[]): FunStatsSummary {
+  const devCardTotals = new Map<string, number>();
+  const tradeTotals = new Map<string, number>();
+
+  for (const game of games) {
+    if (!game.stats) continue;
+    for (const [name, s] of Object.entries(game.stats)) {
+      if (s.devCardsBought !== undefined) {
+        devCardTotals.set(name, (devCardTotals.get(name) ?? 0) + s.devCardsBought);
+      }
+      if (s.trades !== undefined) {
+        tradeTotals.set(name, (tradeTotals.get(name) ?? 0) + s.trades);
+      }
+    }
+  }
+
+  const topOf = (totals: Map<string, number>) =>
+    [...totals.entries()].reduce<{ name: string; total: number } | null>(
+      (best, [name, total]) => (!best || total > best.total ? { name, total } : best),
+      null
+    );
+
+  return {
+    mostDevCards: topOf(devCardTotals),
+    mostTrades: topOf(tradeTotals),
+  };
+}

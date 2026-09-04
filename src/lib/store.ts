@@ -34,7 +34,7 @@ export async function getGames(slug?: string): Promise<Game[]> {
 }
 
 export async function addGame(
-  input: { players: string[]; winner: string; playedAt: string },
+  input: { players: string[]; winner: string; playedAt: string; stats?: Game["stats"] },
   slug?: string
 ): Promise<Game> {
   const games = await readGames(slug);

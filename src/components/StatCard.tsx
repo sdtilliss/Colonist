@@ -7,13 +7,15 @@ export function StatCard({
   label: string;
   value: React.ReactNode;
   sub?: string;
-  accent?: "wood" | "brick" | "wheat" | "ore";
+  accent?: "wood" | "brick" | "wheat" | "ore" | "sheep" | "teal";
 }) {
   const accentClasses: Record<string, string> = {
     wood: "border-t-wood-500",
     brick: "border-t-brick-500",
     wheat: "border-t-wheat-500",
     ore: "border-t-ore-500",
+    sheep: "border-t-sheep-500",
+    teal: "border-t-teal-500",
   };
 
   return (

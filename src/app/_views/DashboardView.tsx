@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getGames, getLegacyStats } from "@/lib/store";
-import { computeStats, computeLeagueSummary } from "@/lib/stats";
+import { computeStats, computeLeagueSummary, computeFunStats } from "@/lib/stats";
 import { Leaderboard } from "@/components/Leaderboard";
 import { RecentGames } from "@/components/RecentGames";
 import { StatCard } from "@/components/StatCard";
@@ -21,6 +21,8 @@ export async function DashboardView({
   const legacy = getLegacyStats(leagueSlug);
   const stats = computeStats(games, legacy.players);
   const summary = computeLeagueSummary(games, stats, legacy.totalGames);
+  const funStats = computeFunStats(games);
+  const hasFunStats = funStats.mostDevCards || funStats.mostTrades;
   const lastGame = games[games.length - 1] ?? null;
   const lastGameDate = lastGame
     ? new Date(lastGame.playedAt).toLocaleDateString("en-US", {
@@ -78,6 +80,23 @@ export async function DashboardView({
           accent="wheat"
         />
       </section>
+
+      {hasFunStats && (
+        <section className="grid grid-cols-2 gap-4">
+          <StatCard
+            label="Most Dev Cards Bought"
+            value={funStats.mostDevCards ? funStats.mostDevCards.name : "—"}
+            sub={funStats.mostDevCards ? `${funStats.mostDevCards.total} total` : undefined}
+            accent="sheep"
+          />
+          <StatCard
+            label="Most Active Trader"
+            value={funStats.mostTrades ? funStats.mostTrades.name : "—"}
+            sub={funStats.mostTrades ? `${funStats.mostTrades.total} trades` : undefined}
+            accent="teal"
+          />
+        </section>
+      )}
 
       <section className="grid gap-6 lg:grid-cols-[1fr_320px]">
         <div>

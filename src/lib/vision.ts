@@ -3,6 +3,8 @@ import Anthropic from "@anthropic-ai/sdk";
 export interface ParsedPlayer {
   rawName: string;
   victoryPoints: number;
+  devCardsBought?: number;
+  trades?: number;
 }
 
 export interface ParsedGame {
@@ -15,17 +17,28 @@ interface ImageInput {
   mediaType: "image/png" | "image/jpeg" | "image/webp";
 }
 
-const PROMPT = `These are one or two screenshots of the same finished game of Catan from Colonist.io. \
-Each screenshot shows a post-game results screen (an "Overview" tab, and/or a more detailed \
-stats tab) listing every player and their final total victory points.
+const PROMPT = `These are one or two screenshots of the same finished game of Catan from Colonist.io.
 
-A row can sometimes be partially covered by a popup or card overlay in one screenshot — if a \
-second screenshot is provided, use it to fill in or double check anything obscured in the first. \
-Treat both screenshots as views of the exact same single game, not two different games — return \
-one merged, de-duplicated list of players.
+The first screenshot is the post-game "Overview" tab, listing every player and their final total
+victory points.
 
-Extract every player's exact displayed name (including any # tag, e.g. "Osborn#6358") and their \
-final total victory point count (the number next to the trophy icon, not dice/resource/dev-card \
+If a second screenshot is provided, it's a different stats tab from the same completed game
+(e.g. Dice Stats or Activity Stats) with extra per-player columns. A row can sometimes be
+partially covered by a popup or card overlay in one screenshot — use the other to fill in or
+double check anything obscured. Treat both screenshots as views of the exact same single game,
+not two different games — return one merged, de-duplicated list of players, matched by their
+exact displayed name/tag.
+
+From that second screenshot, only extract two additional stats, and only if you can identify
+their column confidently by icon (don't guess from position alone):
+- devCardsBought: the column marked with a purple development-card icon and a "+" sign
+  (development cards bought).
+- trades: the column marked with a two-way swap/arrows "trade" icon and a "+" sign
+  (trades completed).
+Omit either field entirely for a player if you aren't confident which column it is — don't guess.
+
+Extract every player's exact displayed name (including any # tag, e.g. "Osborn#6358") and their
+final total victory point count (the number next to the trophy icon, not dice/resource/dev-card
 stats). Identify the winner as the player with the highest victory point total.`;
 
 export async function parseGameScreenshots(images: ImageInput[]): Promise<ParsedGame> {
@@ -56,6 +69,16 @@ export async function parseGameScreenshots(images: ImageInput[]): Promise<Parsed
                 properties: {
                   name: { type: "string", description: "Exact displayed name, including any # tag." },
                   victoryPoints: { type: "number", description: "Final total victory points." },
+                  devCardsBought: {
+                    type: "number",
+                    description:
+                      "Development cards bought, from the purple dev-card '+' column in a second stats screenshot. Omit if not confidently identifiable.",
+                  },
+                  trades: {
+                    type: "number",
+                    description:
+                      "Trades completed, from the swap-arrows '+' column in a second stats screenshot. Omit if not confidently identifiable.",
+                  },
                 },
                 required: ["name", "victoryPoints"],
               },
@@ -92,14 +115,22 @@ export async function parseGameScreenshots(images: ImageInput[]): Promise<Parsed
     throw new Error("Claude did not return a structured result. Try again with clearer screenshots.");
   }
 
-  const input = toolUse.input as { players: { name: string; victoryPoints: number }[]; winnerName: string };
+  const input = toolUse.input as {
+    players: { name: string; victoryPoints: number; devCardsBought?: number; trades?: number }[];
+    winnerName: string;
+  };
 
   if (!input.players?.length || !input.winnerName) {
     throw new Error("Couldn't find any players in those screenshots. Try again with clearer screenshots.");
   }
 
   return {
-    players: input.players.map((p) => ({ rawName: p.name, victoryPoints: p.victoryPoints })),
+    players: input.players.map((p) => ({
+      rawName: p.name,
+      victoryPoints: p.victoryPoints,
+      devCardsBought: p.devCardsBought,
+      trades: p.trades,
+    })),
     winnerRawName: input.winnerName,
   };
 }

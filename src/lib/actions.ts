@@ -34,6 +34,8 @@ export interface ScreenshotEntry {
   rawName: string;
   victoryPoints: number;
   resolvedName: string | null;
+  devCardsBought?: number;
+  trades?: number;
 }
 
 export interface ScreenshotParseResult {
@@ -72,6 +74,8 @@ export async function parseScreenshots(
       rawName: p.rawName,
       victoryPoints: p.victoryPoints,
       resolvedName: await resolveName(p.rawName, roster, leagueSlug),
+      devCardsBought: p.devCardsBought,
+      trades: p.trades,
     }))
   );
 
@@ -79,7 +83,7 @@ export async function parseScreenshots(
 }
 
 export async function confirmScreenshotGame(
-  entries: { rawName: string; resolvedName: string }[],
+  entries: { rawName: string; resolvedName: string; devCardsBought?: number; trades?: number }[],
   winnerResolvedName: string,
   leagueSlug?: string
 ) {
@@ -96,7 +100,23 @@ export async function confirmScreenshotGame(
     entries.map((e) => ({ rawName: e.rawName, resolvedName: e.resolvedName.trim() })),
     leagueSlug
   );
-  await addGame({ players, winner: winnerResolvedName, playedAt: new Date().toISOString() }, leagueSlug);
+
+  const stats: Record<string, { devCardsBought?: number; trades?: number }> = {};
+  for (const e of entries) {
+    if (e.devCardsBought !== undefined || e.trades !== undefined) {
+      stats[e.resolvedName.trim()] = { devCardsBought: e.devCardsBought, trades: e.trades };
+    }
+  }
+
+  await addGame(
+    {
+      players,
+      winner: winnerResolvedName,
+      playedAt: new Date().toISOString(),
+      stats: Object.keys(stats).length ? stats : undefined,
+    },
+    leagueSlug
+  );
 
   const base = leagueBasePath(leagueSlug);
   revalidatePath(`${base}/`);

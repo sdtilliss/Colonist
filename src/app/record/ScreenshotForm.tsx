@@ -9,6 +9,8 @@ interface EntryState {
   victoryPoints: number;
   resolvedName: string;
   isNew: boolean;
+  devCardsBought?: number;
+  trades?: number;
 }
 
 const NEW_PLAYER = "__new__";
@@ -85,6 +87,8 @@ export function ScreenshotForm({ roster, leagueSlug }: { roster: string[]; leagu
         victoryPoints: e.victoryPoints,
         resolvedName: e.resolvedName ?? "",
         isNew: false,
+        devCardsBought: e.devCardsBought,
+        trades: e.trades,
       }));
 
       const winnerEntry = nextEntries.find(
@@ -127,7 +131,12 @@ export function ScreenshotForm({ roster, leagueSlug }: { roster: string[]; leagu
     setLoading(true);
     try {
       await confirmScreenshotGame(
-        entries.map((e) => ({ rawName: e.rawName, resolvedName: e.resolvedName.trim() })),
+        entries.map((e) => ({
+          rawName: e.rawName,
+          resolvedName: e.resolvedName.trim(),
+          devCardsBought: e.devCardsBought,
+          trades: e.trades,
+        })),
         winner,
         leagueSlug
       );
@@ -145,14 +154,14 @@ export function ScreenshotForm({ roster, leagueSlug }: { roster: string[]; leagu
             Upload your Colonist.io results
           </h2>
           <p className="mt-1 text-xs text-ink-800/60">
-            The end-game &ldquo;Victory!!!&rdquo; Overview screenshot works best. Add a second
-            screenshot (e.g. another stats tab) if the first has a card or popup covering a
-            player&rsquo;s row.
+            The end-game &ldquo;Victory!!!&rdquo; Overview screenshot works best. Add a Dice
+            Stats or Activity Stats screenshot too to also capture dev cards bought and trades
+            completed.
           </p>
         </div>
         <div className="grid grid-cols-2 gap-3">
           <ImagePicker label="Overview screenshot" file={image1} onChange={setImage1} />
-          <ImagePicker label="Second screenshot (optional)" file={image2} onChange={setImage2} />
+          <ImagePicker label="Stats screenshot (optional)" file={image2} onChange={setImage2} />
         </div>
         {error && (
           <div className="rounded-xl border border-brick-500/30 bg-brick-500/10 px-4 py-3 text-sm font-medium text-brick-700">
@@ -189,7 +198,11 @@ export function ScreenshotForm({ roster, leagueSlug }: { roster: string[]; leagu
             <div className="flex items-center gap-2 text-sm">
               {entry.resolvedName && <PlayerBadge name={entry.resolvedName} size="sm" />}
               <span className="font-medium text-ink-900">{entry.rawName}</span>
-              <span className="text-ink-800/50">· {entry.victoryPoints} VP</span>
+              <span className="text-ink-800/50">
+                · {entry.victoryPoints} VP
+                {entry.devCardsBought !== undefined && ` · ${entry.devCardsBought} dev cards`}
+                {entry.trades !== undefined && ` · ${entry.trades} trades`}
+              </span>
             </div>
 
             <div className="flex items-center gap-2">

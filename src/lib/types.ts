@@ -1,8 +1,15 @@
+export interface GameStats {
+  devCardsBought?: number;
+  trades?: number;
+}
+
 export interface Game {
   id: string;
   playedAt: string;
   players: string[];
   winner: string;
+  /** Optional per-player extras from a Colonist.io stats screenshot, keyed by player name. */
+  stats?: Record<string, GameStats>;
 }
 
 export interface LegacyBaseline {
