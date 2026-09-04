@@ -5,8 +5,13 @@ import { redirect } from "next/navigation";
 import { addGame, getRoster } from "./store";
 import { resolveName, saveAliases } from "./aliases";
 import { parseGameScreenshots, type ParsedGame } from "./vision";
+import { createLeague } from "./leagues";
 
-export async function recordGame(formData: FormData) {
+function leagueBasePath(leagueSlug?: string) {
+  return leagueSlug ? `/l/${leagueSlug}` : "";
+}
+
+export async function recordGame(leagueSlug: string | undefined, formData: FormData) {
   const players = formData.getAll("players").map(String).filter(Boolean);
   const winner = String(formData.get("winner") ?? "");
 
@@ -17,11 +22,12 @@ export async function recordGame(formData: FormData) {
     throw new Error("Winner must be one of the selected players.");
   }
 
-  await addGame({ players, winner, playedAt: new Date().toISOString() });
+  await addGame({ players, winner, playedAt: new Date().toISOString() }, leagueSlug);
 
-  revalidatePath("/");
-  revalidatePath("/history");
-  redirect("/?recorded=1");
+  const base = leagueBasePath(leagueSlug);
+  revalidatePath(`${base}/`);
+  revalidatePath(`${base}/history`);
+  redirect(`${base}/?recorded=1`);
 }
 
 export interface ScreenshotEntry {
@@ -42,7 +48,10 @@ async function fileToImageInput(file: File) {
   return { base64: buffer.toString("base64"), mediaType };
 }
 
-export async function parseScreenshots(formData: FormData): Promise<ScreenshotParseResult> {
+export async function parseScreenshots(
+  formData: FormData,
+  leagueSlug?: string
+): Promise<ScreenshotParseResult> {
   const image1 = formData.get("image1");
   const image2 = formData.get("image2");
 
@@ -56,13 +65,13 @@ export async function parseScreenshots(formData: FormData): Promise<ScreenshotPa
   }
 
   const parsed: ParsedGame = await parseGameScreenshots(images);
-  const roster = await getRoster();
+  const roster = await getRoster(leagueSlug);
 
   const entries: ScreenshotEntry[] = await Promise.all(
     parsed.players.map(async (p) => ({
       rawName: p.rawName,
       victoryPoints: p.victoryPoints,
-      resolvedName: await resolveName(p.rawName, roster),
+      resolvedName: await resolveName(p.rawName, roster, leagueSlug),
     }))
   );
 
@@ -71,7 +80,8 @@ export async function parseScreenshots(formData: FormData): Promise<ScreenshotPa
 
 export async function confirmScreenshotGame(
   entries: { rawName: string; resolvedName: string }[],
-  winnerResolvedName: string
+  winnerResolvedName: string,
+  leagueSlug?: string
 ) {
   const players = entries.map((e) => e.resolvedName.trim()).filter(Boolean);
 
@@ -82,10 +92,24 @@ export async function confirmScreenshotGame(
     throw new Error("Winner must be one of the confirmed players.");
   }
 
-  await saveAliases(entries.map((e) => ({ rawName: e.rawName, resolvedName: e.resolvedName.trim() })));
-  await addGame({ players, winner: winnerResolvedName, playedAt: new Date().toISOString() });
+  await saveAliases(
+    entries.map((e) => ({ rawName: e.rawName, resolvedName: e.resolvedName.trim() })),
+    leagueSlug
+  );
+  await addGame({ players, winner: winnerResolvedName, playedAt: new Date().toISOString() }, leagueSlug);
 
-  revalidatePath("/");
-  revalidatePath("/history");
-  redirect("/?recorded=1");
+  const base = leagueBasePath(leagueSlug);
+  revalidatePath(`${base}/`);
+  revalidatePath(`${base}/history`);
+  redirect(`${base}/?recorded=1`);
+}
+
+export async function createLeagueAction(formData: FormData) {
+  const name = String(formData.get("name") ?? "").trim();
+  if (!name) {
+    throw new Error("Give your league a name.");
+  }
+
+  const meta = await createLeague(name);
+  redirect(`/l/${meta.slug}`);
 }

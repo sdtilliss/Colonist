@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { recordGame } from "@/lib/actions";
 import { PlayerBadge } from "@/components/PlayerBadge";
 
-export function RecordForm({ roster }: { roster: string[] }) {
+export function RecordForm({ roster, leagueSlug }: { roster: string[]; leagueSlug?: string }) {
   const [selected, setSelected] = useState<string[]>([]);
   const [winner, setWinner] = useState<string>("");
   const [newPlayer, setNewPlayer] = useState("");
@@ -44,7 +44,7 @@ export function RecordForm({ roster }: { roster: string[] }) {
           return;
         }
         setPending(true);
-        await recordGame(formData);
+        await recordGame(leagueSlug, formData);
       }}
       className="space-y-8"
     >

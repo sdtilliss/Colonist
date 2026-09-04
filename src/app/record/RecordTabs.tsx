@@ -4,7 +4,7 @@ import { useState } from "react";
 import { RecordForm } from "./RecordForm";
 import { ScreenshotForm } from "./ScreenshotForm";
 
-export function RecordTabs({ roster }: { roster: string[] }) {
+export function RecordTabs({ roster, leagueSlug }: { roster: string[]; leagueSlug?: string }) {
   const [mode, setMode] = useState<"manual" | "ai">("ai");
 
   return (
@@ -30,7 +30,11 @@ export function RecordTabs({ roster }: { roster: string[] }) {
         </button>
       </div>
 
-      {mode === "ai" ? <ScreenshotForm roster={roster} /> : <RecordForm roster={roster} />}
+      {mode === "ai" ? (
+        <ScreenshotForm roster={roster} leagueSlug={leagueSlug} />
+      ) : (
+        <RecordForm roster={roster} leagueSlug={leagueSlug} />
+      )}
     </div>
   );
 }

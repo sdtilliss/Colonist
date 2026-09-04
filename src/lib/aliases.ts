@@ -1,33 +1,54 @@
 import path from "path";
 import { readJson, writeJson } from "./blobStore";
+import { DEFAULT_LEAGUE_SLUG } from "./leagues";
 
-const ALIASES_PATH = path.join(process.cwd(), "data", "aliases.json");
+function aliasesPaths(slug?: string) {
+  if (!slug || slug === DEFAULT_LEAGUE_SLUG) {
+    return {
+      blobPath: "aliases.json",
+      localPath: path.join(process.cwd(), "data", "aliases.json"),
+    };
+  }
+  return {
+    blobPath: `leagues/${slug}/aliases.json`,
+    localPath: path.join(process.cwd(), "data", "leagues", slug, "aliases.json"),
+  };
+}
 
-async function readAliases(): Promise<Record<string, string>> {
+async function readAliases(slug?: string): Promise<Record<string, string>> {
   try {
-    return await readJson<Record<string, string>>("aliases.json", ALIASES_PATH);
+    const { blobPath, localPath } = aliasesPaths(slug);
+    return await readJson<Record<string, string>>(blobPath, localPath);
   } catch {
     return {};
   }
 }
 
-export async function getAliasMap(): Promise<Record<string, string>> {
-  return readAliases();
+export async function getAliasMap(slug?: string): Promise<Record<string, string>> {
+  return readAliases(slug);
 }
 
-export async function saveAliases(pairs: { rawName: string; resolvedName: string }[]): Promise<void> {
-  const aliases = await readAliases();
+export async function saveAliases(
+  pairs: { rawName: string; resolvedName: string }[],
+  slug?: string
+): Promise<void> {
+  const aliases = await readAliases(slug);
   for (const { rawName, resolvedName } of pairs) {
     if (rawName.toLowerCase() !== resolvedName.toLowerCase()) {
       aliases[rawName] = resolvedName;
     }
   }
-  await writeJson("aliases.json", ALIASES_PATH, aliases);
+  const { blobPath, localPath } = aliasesPaths(slug);
+  await writeJson(blobPath, localPath, aliases);
 }
 
 /** Best-effort guess: an existing alias, else an exact (case-insensitive) roster match, else null. */
-export async function resolveName(rawName: string, roster: string[]): Promise<string | null> {
-  const aliases = await readAliases();
+export async function resolveName(
+  rawName: string,
+  roster: string[],
+  slug?: string
+): Promise<string | null> {
+  const aliases = await readAliases(slug);
   if (aliases[rawName]) return aliases[rawName];
   const exact = roster.find((r) => r.toLowerCase() === rawName.toLowerCase());
   return exact ?? null;

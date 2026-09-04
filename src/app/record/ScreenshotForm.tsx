@@ -56,7 +56,7 @@ function ImagePicker({
   );
 }
 
-export function ScreenshotForm({ roster }: { roster: string[] }) {
+export function ScreenshotForm({ roster, leagueSlug }: { roster: string[]; leagueSlug?: string }) {
   const [step, setStep] = useState<"upload" | "confirm">("upload");
   const [image1, setImage1] = useState<File | null>(null);
   const [image2, setImage2] = useState<File | null>(null);
@@ -78,7 +78,7 @@ export function ScreenshotForm({ roster }: { roster: string[] }) {
       formData.set("image1", image1);
       if (image2) formData.set("image2", image2);
 
-      const result = await parseScreenshots(formData);
+      const result = await parseScreenshots(formData, leagueSlug);
 
       const nextEntries: EntryState[] = result.entries.map((e: ScreenshotEntry) => ({
         rawName: e.rawName,
@@ -128,7 +128,8 @@ export function ScreenshotForm({ roster }: { roster: string[] }) {
     try {
       await confirmScreenshotGame(
         entries.map((e) => ({ rawName: e.rawName, resolvedName: e.resolvedName.trim() })),
-        winner
+        winner,
+        leagueSlug
       );
     } catch (e) {
       if (e instanceof Error) setError(e.message);

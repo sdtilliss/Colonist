@@ -1,4 +1,5 @@
 import fs from "fs";
+import path from "path";
 import { get, put } from "@vercel/blob";
 
 function hasBlob(): boolean {
@@ -36,5 +37,6 @@ export async function writeJson<T>(blobPathname: string, localPath: string, data
     });
     return;
   }
+  fs.mkdirSync(path.dirname(localPath), { recursive: true });
   fs.writeFileSync(localPath, body);
 }

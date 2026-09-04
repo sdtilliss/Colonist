@@ -1,10 +1,17 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export function Nav() {
+  const pathname = usePathname();
+  const leagueMatch = pathname.match(/^\/l\/([^/]+)/);
+  const base = leagueMatch ? `/l/${leagueMatch[1]}` : "";
+
   return (
     <header className="sticky top-0 z-10 border-b border-ink-900/10 bg-parchment-50/90 backdrop-blur">
       <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3 sm:flex-nowrap sm:px-6">
-        <Link href="/" className="flex shrink-0 items-center gap-2">
+        <Link href={`${base}/`} className="flex shrink-0 items-center gap-2">
           <span className="hidden text-xl sm:inline" aria-hidden>
             🪵🧱🐑🌾🪨
           </span>
@@ -14,19 +21,25 @@ export function Nav() {
         </Link>
         <nav className="flex items-center gap-1 text-sm font-medium text-ink-800">
           <Link
-            href="/"
+            href={`${base}/`}
             className="rounded-full px-3 py-1.5 transition hover:bg-ink-900/5"
           >
             Dashboard
           </Link>
           <Link
-            href="/history"
+            href={`${base}/history`}
             className="rounded-full px-3 py-1.5 transition hover:bg-ink-900/5"
           >
             History
           </Link>
           <Link
-            href="/record"
+            href="/new"
+            className="hidden rounded-full px-3 py-1.5 transition hover:bg-ink-900/5 sm:inline-block"
+          >
+            New League
+          </Link>
+          <Link
+            href={`${base}/record`}
             className="ml-1 whitespace-nowrap rounded-full bg-brick-500 px-4 py-1.5 text-white shadow-card transition hover:bg-brick-600"
           >
             Record Game
