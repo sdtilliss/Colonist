@@ -16,12 +16,18 @@ function hasBlob(): boolean {
  */
 export async function readJson<T>(blobPathname: string, localPath: string): Promise<T> {
   if (hasBlob()) {
-    const blob = await get(blobPathname, { access: "private" });
-    if (blob) {
-      const text = await new Response(blob.stream).text();
-      return JSON.parse(text) as T;
+    try {
+      const blob = await get(blobPathname, { access: "private" });
+      if (blob) {
+        const text = await new Response(blob.stream).text();
+        return JSON.parse(text) as T;
+      }
+      // Not created in the blob store yet — fall through to the local seed.
+    } catch (err) {
+      // A transient Blob error shouldn't crash the whole page — fall back to the
+      // local seed (possibly stale, but a working page beats a hard failure).
+      console.error(`Blob read failed for ${blobPathname}, falling back to local seed:`, err);
     }
-    // Not created in the blob store yet — fall through to the local seed.
   }
   const raw = fs.readFileSync(localPath, "utf8");
   return JSON.parse(raw) as T;
